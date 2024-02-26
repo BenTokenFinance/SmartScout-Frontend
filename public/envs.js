@@ -17,6 +17,6 @@ window.__envs = {
     NEXT_PUBLIC_API_PROTOCOL: "https",
     NEXT_PUBLIC_NETWORK_NAME: "SmartBCH",
     NEXT_PUBLIC_NETWORK_RPC_URL: "https://smartbch.greyh.at/",
-    NEXT_PUBLIC_IS_TESTNET: "true",
+    NEXT_PUBLIC_IS_TESTNET: "false",
     NEXT_PUBLIC_NETWORK_SHORT_NAME: "smartBCH",
     }    

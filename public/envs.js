@@ -8,6 +8,7 @@ window.__envs = {
     NEXT_PUBLIC_NETWORK_CURRENCY_NAME: "SmartBCH",
     NEXT_PUBLIC_NETWORK_CURRENCY_SYMBOL: "SBCH",
     NEXT_PUBLIC_HOMEPAGE_CHARTS: "['daily_txs']",
+    NEXT_PUBLIC_API_HOST: "108.181.197.31:81",
     NEXT_PUBLIC_APP_HOST: "http://108.181.197.31:81",
     NEXT_PUBLIC_API_BASE_PATH: "/",
     NEXT_PUBLIC_API_SPEC_URL: "https://raw.githubusercontent.com/blockscout/blockscout-api-v2-swagger/main/swagger.yaml",

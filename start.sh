@@ -1,4 +1,7 @@
 #!/bin/sh
+
+git pull origin sbch
+
 # ????docker-composeĿ¼
 docker build --build-arg GIT_COMMIT_SHA=$(git rev-parse --short HEAD) --build-arg GIT_TAG=$(git describe --tags --abbrev=0) -t blockscout-frontend:local ./
 

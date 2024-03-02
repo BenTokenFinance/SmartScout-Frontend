@@ -1,7 +1,7 @@
 import type { GridProps } from '@chakra-ui/react';
 import { Box, Grid, Flex, Text, Link, VStack, Skeleton } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { CustomLinksGroup } from 'types/footerLinks';
 
@@ -75,18 +75,28 @@ const Footer = () => {
     },
   ];
 
-  const frontendLink = (() => {
+  // const frontendLink = useCallback(()=>{
+  //   if (config.UI.footer.frontendVersion) {
+  //     return <Link href={ FRONT_VERSION_URL } target="_blank">{ config.UI.footer.frontendVersion }</Link>;
+  //   }
+
+  //   if (config.UI.footer.frontendCommit) {
+  //     return <Link href={ FRONT_COMMIT_URL } target="_blank">{ config.UI.footer.frontendCommit }</Link>;
+  //   }
+
+  //   return null;
+  // },[config])
+  // fix bug
+  const [frontendLink, setFrontendLink] = useState<any>(null);
+
+  useEffect(() => {
+    // 根据config对象计算frontendLink
     if (config.UI.footer.frontendVersion) {
-      return <Link href={ FRONT_VERSION_URL } target="_blank">{ config.UI.footer.frontendVersion }</Link>;
+      setFrontendLink(<Link href={FRONT_VERSION_URL} target="_blank">{config.UI.footer.frontendVersion}</Link>);
+    } else if (config.UI.footer.frontendCommit) {
+      setFrontendLink(<Link href={FRONT_COMMIT_URL} target="_blank">{config.UI.footer.frontendCommit}</Link>);
     }
-
-    if (config.UI.footer.frontendCommit) {
-      return <Link href={ FRONT_COMMIT_URL } target="_blank">{ config.UI.footer.frontendCommit }</Link>;
-    }
-
-    return null;
-  })();
-
+  }, []); 
   const fetch = useFetch();
 
   const { isPlaceholderData, data: linksData } = useQuery<unknown, ResourceError<unknown>, Array<CustomLinksGroup>>({
@@ -122,18 +132,30 @@ const Footer = () => {
         <Text mt={ 3 } fontSize="xs">
           Blockscout is a tool for inspecting and analyzing EVM based blockchains. Blockchain explorer for Ethereum Networks.
         </Text>
+       
+        {(apiVersionUrl || frontendLink) && 
         <VStack spacing={ 1 } mt={ 6 } alignItems="start">
-          { apiVersionUrl && (
-            <Text fontSize="xs">
-              Backend: <Link href={ apiVersionUrl } target="_blank">{ backendVersionData?.backend_version }</Link>
-            </Text>
-          ) }
-          { frontendLink && (
-            <Text fontSize="xs">
-              Frontend: { frontendLink }
-            </Text>
-          ) }
-        </VStack>
+        { apiVersionUrl && (
+          <Text fontSize="xs">
+            Backend: <Link href={ apiVersionUrl } target="_blank">{ backendVersionData?.backend_version }</Link>
+          </Text>
+        ) }
+        { frontendLink && (
+           <Text fontSize="xs">
+            Frontend:{ frontendLink }
+          </Text>
+        ) }
+
+
+
+
+   
+
+
+      </VStack>
+
+        }
+        
       </Box>
     );
   }, [ apiVersionUrl, backendVersionData?.backend_version, frontendLink ]);
@@ -187,6 +209,7 @@ const Footer = () => {
   }
 
   return (
+    
     <Grid
       { ...containerProps }
       gridTemplateAreas={{
@@ -219,7 +242,7 @@ const Footer = () => {
         mt={{ base: 8, lg: 0 }}
       >
         { BLOCKSCOUT_LINKS.map(link => <FooterLinkItem { ...link } key={ link.text }/>) }
-      </Grid>
+      </Grid> 
     </Grid>
   );
 };

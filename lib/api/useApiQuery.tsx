@@ -32,7 +32,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
       data[0].name=handName
     }
 
-    if(response.token.name && response.token.name==fixName){
+    if(response?.token?.name && response.token.name==fixName){
       data[0].token.name=handName
     }
     

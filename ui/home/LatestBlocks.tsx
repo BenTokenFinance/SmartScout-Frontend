@@ -1,7 +1,7 @@
 import { Box, Heading, Flex, Text, VStack, Skeleton } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import type { SocketMessage } from 'lib/socket/types';
 import type { Block } from 'types/api/block';
@@ -34,6 +34,45 @@ const LatestBlocks = () => {
       placeholderData: Array(blocksMaxCount).fill(BLOCK),
     },
   });
+
+  const [newData,setNewData]=useState<any>();
+  const [validators,setValidators]=useState<any>();
+  useEffect(()=>{
+    const fetchs=async ()=>{
+     
+      const response = await fetch('https://asset.benswap.cash/validators.json');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const res:any = await response.json();
+      setValidators(res);
+    }
+    if(!validators){
+       fetchs();
+    }
+    
+  },[])
+
+
+  useEffect(()=>{
+    const fetchs=async ()=>{
+      const datas:any=[data]
+
+      datas[0]=(datas[0] || []).map((t:any,i:any)=>{
+        if(t.miner.hash){
+          t.miner.name=validators[t.miner.hash];
+        }
+        return t;
+      })
+      setNewData(datas[0]);
+    }
+
+    if(data && validators){
+      fetchs();
+    }
+ 
+  },[data,validators])
+
 
   const queryClient = useQueryClient();
   const statsQueryResult = useApiQuery('stats', {
@@ -89,7 +128,7 @@ const LatestBlocks = () => {
         ) }
         <VStack spacing={ 3 } mb={ 4 } overflow="hidden" alignItems="stretch">
           <AnimatePresence initial={ false } >
-            { dataToShow.map(((block, index) => (
+            { dataToShow.map(((block:any, index:any) => (
               <LatestBlocksItem
                 key={ block.height + (isPlaceholderData ? String(index) : '') }
                 block={ block }

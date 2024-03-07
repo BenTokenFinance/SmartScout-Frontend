@@ -2,7 +2,7 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 import omit from 'lodash/omit';
 import { useRouter } from 'next/router';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { animateScroll } from 'react-scroll';
 
 import type { PaginationParams } from './types';
@@ -77,7 +77,7 @@ export default function useQueryWithPages<Resource extends PaginatedResources>({
     scrollRef?.current ? scrollRef.current.scrollIntoView(true) : animateScroll.scrollToTop({ duration: 0 });
   }, [ scrollRef ]);
 
-  const queryResult = useApiQuery(resourceName, {
+  const queryResult:any = useApiQuery(resourceName, {
     pathParams,
     queryParams: Object.keys(queryParams).length ? queryParams : undefined,
     queryOptions: {
@@ -85,6 +85,45 @@ export default function useQueryWithPages<Resource extends PaginatedResources>({
       ...options,
     },
   });
+
+  const [newQueryResult,setNewQueryResult]=useState<any>();
+  const [validators,setValidators]=useState<any>();
+  useEffect(()=>{
+    const fetchs=async ()=>{
+      const data=[{...queryResult}]
+      const response = await fetch('https://asset.benswap.cash/validators.json');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const res:any = await response.json();
+      setValidators(res);
+    }
+    if(!validators){
+       fetchs();
+    }
+    
+  },[])
+
+  useEffect(()=>{
+    const fetchs=async ()=>{
+      const data=[{...queryResult}]
+
+      data[0].data.items=data[0].data.items.map((t:any,i:any)=>{
+        if(t.miner.hash){
+          t.miner.name=validators[t.miner.hash];
+        }
+        return t;
+      })
+      setNewQueryResult(data[0]);
+    }
+
+    if(Object.keys(queryResult).length>0&&validators){
+      fetchs();
+    }
+ 
+  },[queryResult,validators])
+
+
   const { data } = queryResult;
   const nextPageParams = getNextPageParams(data);
 
@@ -221,5 +260,5 @@ export default function useQueryWithPages<Resource extends PaginatedResources>({
     }, 0);
   }, []);
 
-  return { ...queryResult, pagination, onFilterChange, onSortingChange };
+  return { ...newQueryResult, pagination, onFilterChange, onSortingChange };
 }

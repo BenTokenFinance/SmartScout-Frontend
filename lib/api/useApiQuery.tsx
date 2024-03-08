@@ -5,6 +5,7 @@ import type { ResourceError, ResourceName, ResourcePayload } from './resources';
 import type { Params as ApiFetchParams } from './useApiFetch';
 import useApiFetch from './useApiFetch';
 import { useEffect, useMemo, useState } from 'react';
+import { useValidators } from '../contexts/ValidatorsProvider';
 
 export interface Params<R extends ResourceName, E = unknown> extends ApiFetchParams<R> {
   queryOptions?: Omit<UseQueryOptions<ResourcePayload<R>, ResourceError<E>, ResourcePayload<R>>, 'queryKey' | 'queryFn'>;
@@ -23,8 +24,11 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
   { queryOptions, pathParams, queryParams, fetchParams }: Params<R, E> = {},
 ) {
   const apiFetch = useApiFetch();
+  const validators:any = useValidators();
+  // 使用 validators 数据
+
   //add hard Code
-  const hardCode=async(resource:any,response:any):Promise<any>=>{
+  const hardCode=(resource:any,response:any)=>{
     const data=[response];
     const handName="Wrapped SBCH"
     const fixName="Wrapped BCH"
@@ -51,40 +55,37 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
       data[0]=addAddressName(response);
     }
     if(resource=='blocks' && response.items){
-      data[0]=await addAddressNameList(response);
+      data[0]=addAddressNameList(response);
     }
     if(resource=='homepage_blocks' && response.length>0){
-      data[0]=await addAddressNameLast(response);
+      data[0]=addAddressNameLast(response);
     }
     
     return data[0];
   }
 
   //add ens name
-  const addAddressName=async(response:any)=>{
+  const addAddressName=(response:any)=>{
       const data=[response];
-      const res=await getValidators();
-      data[0].miner.name=res[data[0].miner.hash];
+      data[0].miner.name=validators[data[0].miner.hash];
       return data[0]
   }
 
   //add ens name list 
-  const addAddressNameList=async(response:any)=>{
+  const addAddressNameList=(response:any)=>{
       const data=[response];
-      const res=await getValidators();
       data[0].items=data[0].items.map((t:any,i:any)=>{
-            t.miner.name=res[t.miner.hash];
+            t.miner.name=validators[t.miner.hash];
             return t;
      })
      return data[0]
   }
 
     //add ens name list 
-  const addAddressNameLast=async(response:any)=>{
+  const addAddressNameLast=(response:any)=>{
       const data=[response];
-      const res=await getValidators();
       data[0]=data[0].map((t:any,i:any)=>{
-            t.miner.name=res[t.miner.hash];
+            t.miner.name=validators[t.miner.hash];
             return t;
       })
     
@@ -92,18 +93,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
       return data[0]
   }
 
-  const getValidators=async ()=>{
-    let res:any= {};
-    try {
-      const response = await fetch('https://asset.benswap.cash/validators.json');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      res = await response.json();
-    } catch (error) {}
 
-    return res;
-  }
 
   return useQuery<ResourcePayload<R>, ResourceError<E>, ResourcePayload<R>>({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
@@ -117,8 +107,12 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
 
     queryFn:async() => {
       const response:any = await apiFetch(resource, { pathParams, queryParams, fetchParams });
-      const tranResponse=await hardCode(resource,response)
+      const tranResponse=hardCode(resource,response)
       return tranResponse;
+    },
+    select:(data)=>{
+       const  newData:any=hardCode(resource,data);
+       return newData;
     },
     ...queryOptions
   });

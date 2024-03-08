@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import type { Props } from './types';
 
@@ -8,8 +8,13 @@ import HeaderDesktop from 'ui/snippets/header/HeaderDesktop';
 import HeaderMobile from 'ui/snippets/header/HeaderMobile';
 
 import * as Layout from './components';
+import { useValidators } from '../../../lib/contexts/ValidatorsProvider';
 
 const LayoutDefault = ({ children }: Props) => {
+  const validators = useValidators();
+  useEffect(()=>{
+    console.log('-----validators------',validators)
+  },[validators])
   return (
     <Layout.Container>
       <Layout.TopRow/>

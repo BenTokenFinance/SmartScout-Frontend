@@ -23,6 +23,8 @@ import Layout from 'ui/shared/layout/Layout';
 import Web3ModalProvider from 'ui/shared/Web3ModalProvider';
 
 import 'lib/setLocale';
+import { ValidatorsProvider } from '../lib/contexts/ValidatorsProvider';
+import CustomChild from './customChild';
 // import 'focus-visible/dist/focus-visible';
 
 type AppPropsWithLayout = AppProps & {
@@ -54,28 +56,33 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => <Layout>{ page }</Layout>);
 
   return (
-    <ChakraProvider theme={ theme } cookies={ pageProps.cookies }>
-      <AppErrorBoundary
-        { ...ERROR_SCREEN_STYLES }
-        onError={ handleError }
-      >
-        <Web3ModalProvider>
-          <AppContextProvider pageProps={ pageProps }>
-            <QueryClientProvider client={ queryClient }>
-              <GrowthBookProvider growthbook={ growthBook }>
-                <ScrollDirectionProvider>
-                  <SocketProvider url={ `${ config.api.socket }${ config.api.basePath }/socket/v2` }>
-                    { getLayout(<Component { ...pageProps }/>) }
-                  </SocketProvider>
-                </ScrollDirectionProvider>
-              </GrowthBookProvider>
-              <ReactQueryDevtools buttonPosition="bottom-left" position="left"/>
-              <GoogleAnalytics/>
-            </QueryClientProvider>
-          </AppContextProvider>
-        </Web3ModalProvider>
-      </AppErrorBoundary>
-    </ChakraProvider>
+    
+    <ValidatorsProvider>
+       <ChakraProvider theme={ theme } cookies={ pageProps.cookies }>
+       <AppErrorBoundary
+         { ...ERROR_SCREEN_STYLES }
+         onError={ handleError }
+       >
+         <Web3ModalProvider>
+           <AppContextProvider pageProps={ pageProps }>
+             <QueryClientProvider client={ queryClient }>
+               <GrowthBookProvider growthbook={ growthBook }>
+                 <ScrollDirectionProvider>
+                   <SocketProvider url={ `${ config.api.socket }${ config.api.basePath }/socket/v2` }>
+                     <CustomChild>
+                      { getLayout(<Component { ...pageProps }/>) }
+                     </CustomChild>
+                   </SocketProvider>
+                 </ScrollDirectionProvider>
+               </GrowthBookProvider>
+               <ReactQueryDevtools buttonPosition="bottom-left" position="left"/>
+               <GoogleAnalytics/>
+             </QueryClientProvider>
+           </AppContextProvider>
+         </Web3ModalProvider>
+       </AppErrorBoundary>
+     </ChakraProvider>
+    </ValidatorsProvider>
   );
 }
 

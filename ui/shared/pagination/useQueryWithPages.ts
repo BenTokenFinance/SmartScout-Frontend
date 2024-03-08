@@ -86,42 +86,42 @@ export default function useQueryWithPages<Resource extends PaginatedResources>({
     },
   });
 
-  const [newQueryResult,setNewQueryResult]=useState<any>();
-  const [validators,setValidators]=useState<any>();
-  useEffect(()=>{
-    const fetchs=async ()=>{
-      const data=[{...queryResult}]
-      const response = await fetch('https://asset.benswap.cash/validators.json');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const res:any = await response.json();
-      setValidators(res);
-    }
-    if(!validators){
-       fetchs();
-    }
+  // const [newQueryResult,setNewQueryResult]=useState<any>();
+  // const [validators,setValidators]=useState<any>();
+  // useEffect(()=>{
+  //   const fetchs=async ()=>{
+  //     const data=[{...queryResult}]
+  //     const response = await fetch('https://asset.benswap.cash/validators.json');
+  //     if (!response.ok) {
+  //       throw new Error('Network response was not ok');
+  //     }
+  //     const res:any = await response.json();
+  //     setValidators(res);
+  //   }
+  //   if(!validators){
+  //      fetchs();
+  //   }
     
-  },[])
+  // },[])
 
-  useEffect(()=>{
-    const fetchs=async ()=>{
-      const data=[{...queryResult}]
+  // useEffect(()=>{
+  //   const fetchs=async ()=>{
+  //     const data=[{...queryResult}]
 
-      data[0].data.items=data[0].data.items.map((t:any,i:any)=>{
-        if(t.miner.hash){
-          t.miner.name=validators[t.miner.hash];
-        }
-        return t;
-      })
-      setNewQueryResult(data[0]);
-    }
+  //     data[0].data.items=data[0].data.items.map((t:any,i:any)=>{
+  //       if(t.miner.hash){
+  //         t.miner.name=validators[t.miner.hash];
+  //       }
+  //       return t;
+  //     })
+  //     setNewQueryResult(data[0]);
+  //   }
 
-    if(Object.keys(queryResult).length>0&&validators){
-      fetchs();
-    }
+  //   if(Object.keys(queryResult).length>0&&validators){
+  //     fetchs();
+  //   }
  
-  },[queryResult,validators])
+  // },[queryResult,validators])
 
 
   const { data } = queryResult;
@@ -260,5 +260,5 @@ export default function useQueryWithPages<Resource extends PaginatedResources>({
     }, 0);
   }, []);
 
-  return { ...newQueryResult, pagination, onFilterChange, onSortingChange };
+  return { ...queryResult, pagination, onFilterChange, onSortingChange };
 }

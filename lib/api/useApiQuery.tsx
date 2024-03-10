@@ -94,6 +94,71 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
   }
 
 
+  //token tarn Code
+  const specialConversion=async(resource:any,response:any)=>{
+      const data=[response];
+      if(resource=='tokens' && response.items){
+        let urls=[];
+        for(let p of data[0].items){
+          urls.push(`https://asset.benswap.cash/assets/${p.address}/info.json`)
+        }
+  
+        // 使用Promise.all来同时发送所有请求，并等待它们全部完成
+        const results = await Promise.all(urls.map(url =>
+          fetch(url)
+          .then(res => res.json())
+          .catch(error => {
+            console.error("Error fetching from:", url, error);
+            return null; // 对于失败的请求，返回null或者其他特定的值
+          })
+        ));
+  
+  
+        for(const [i, value] of results.entries()){
+          if(value){
+            data[0].items[i].name=(value as any).name;
+            data[0].items[i].symbol=(value as any).symbol;
+          }
+        }
+      }
+
+      if(resource=='token'){
+        try {
+          // 发起fetch请求
+          const ret = await fetch(`https://asset.benswap.cash/assets/${data[0].address}/info.json`);
+          // 等待并解析JSON响应
+          const res_data = await ret.json();
+          // 使用获取到的数据
+          console.log(res_data);
+          data[0].name=(res_data as any).name;
+          data[0].symbol=(res_data as any).symbol;
+        } catch (error) {
+          // 处理请求或解析过程中的错误
+          console.error("Error fetching data: ", error);
+        }
+      }
+
+
+      if(resource=='stats' && data[0].total_blocks){
+        try {
+          // 发起fetch请求
+          const ret = await fetch(`https://api2.benswap.cash/sbchPrice`);
+          // 等待并解析JSON响应
+          const res_data:any = await ret.json();
+          // 使用获取到的数据
+          console.log(res_data.price);
+          data[0].coin_price=res_data.price;
+          data[0].market_cap=`${parseFloat(res_data.price)*68313.420483}`;
+        } catch (error) {
+          // 处理请求或解析过程中的错误
+          console.error("Error fetching data: ", error);
+        }
+      }
+      return data[0];
+  }
+
+
+
 
   return useQuery<ResourcePayload<R>, ResourceError<E>, ResourcePayload<R>>({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
@@ -107,7 +172,8 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
 
     queryFn:async() => {
       const response:any = await apiFetch(resource, { pathParams, queryParams, fetchParams });
-      const tranResponse=hardCode(resource,response)
+      const res=await specialConversion(resource,response);
+      const tranResponse=hardCode(resource,res);
       return tranResponse;
     },
     select:(data)=>{

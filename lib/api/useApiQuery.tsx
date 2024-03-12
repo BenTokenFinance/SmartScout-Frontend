@@ -97,6 +97,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
   //token tarn Code
   const specialConversion=async(resource:any,response:any)=>{
       const data=[response];
+      //token name  transition
       if(resource=='tokens' && response.items){
         let urls=[];
         for(let p of data[0].items){
@@ -138,7 +139,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
         }
       }
 
-
+      //blocks name transition
       if(resource=='stats' && data[0].total_blocks){
         try {
           // 发起fetch请求
@@ -154,8 +155,104 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
           console.error("Error fetching data: ", error);
         }
       }
+
+    
+      // home chart  transition 
+      if(resource=='stats_charts_market'){
+        try {
+
+          const response:any = await apiFetch('homepage_blocks', {});
+          const height=response[0].height;
+          const blockNumbers=calculateBlockNumbersForLast10Days8AM(height);
+          // console.log("height",height);
+          // console.log("calculateBlockNumbersForLast10Days8AM",calculateBlockNumbersForLast10Days8AM(height)) ;
+          const date_data:any={};
+          
+          // set history data
+          for(const [index,value] of blockNumbers.entries()){
+              // 使用时间戳创建一个新的Date对象
+              const date = new Date(value.date);
+              // 注意月份是从0开始的，所以需要+1来获取正确的月份
+              const formattedDate = date.getFullYear() + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0');
+              date_data[`block${index}`]={
+                date:formattedDate,
+                closing_price:null,
+                market_cap:null
+              };
+          }
+
+          // add filter 
+          const blocksQueryParts = blockNumbers.map((blockNumber, index) => {
+            return `
+              block${index}: bundles(block: {number: ${blockNumber.block}}) {
+                bchPrice
+              }
+            `;
+          }).join('\n');
+
+          // 定义GraphQL查询
+          const graphqlQuery = {
+            query: `
+              {
+                ${blocksQueryParts}
+              }
+            `,
+            variables: {} // 如果你的查询中没有使用变量，这里可以保留空对象或根据需要传递变量
+          };
+          // get price
+          const requestBody = JSON.stringify(graphqlQuery);
+          const ret = await fetch(`https://subgraphs.benswap.cash/subgraphs/name/bentokenfinance/bch-exchange`,
+            {
+              method: 'post',
+              headers: { 'Content-Type': 'application/json' },
+              body: requestBody
+            }
+          );
+          const res_data:any = await ret.json();
+          // 使用获取到的数据
+          console.log("使用获取到的数据",res_data.price);
+          for (const i in res_data.data) {
+            date_data[i].closing_price=res_data.data[i][0]['bchPrice'];
+            date_data[i].market_cap=`${parseFloat(res_data.data[i][0]['bchPrice'])*68313.420483}`
+          }
+          data[0].chart_data=Object.keys(date_data).map((t,i)=>{
+            return date_data[t];
+          })
+
+        } catch (error) {
+          // 处理请求或解析过程中的错误
+          console.error("Error fetching data: ", error);
+        }
+      }
+
+      
       return data[0];
   }
+
+
+  
+  // 计算给定日期的8点对应的区块号
+    const calculateBlockNumberFor8AM=(daysAgo:any, currentBlockNumber:any, currentDate:any)=>{
+      const millisecondsPerBlock = 6000;
+      const now = currentDate; // 获取当前时间
+      const todayAt8AM = new Date(now.getFullYear(), now.getMonth(), now.getDate()-daysAgo, 8, 0, 0); // 设置为今天的8点
+      const timeDifference = currentDate.getTime() -  todayAt8AM.getTime(); // 时间差（毫秒）
+      const blocksAgo = timeDifference / millisecondsPerBlock;
+      return {date:todayAt8AM.getTime(),block:Math.floor(currentBlockNumber - blocksAgo)};
+    }
+
+    // 计算包括今天在内的前10天每天8点的区块号
+    const calculateBlockNumbersForLast10Days8AM=(currentBlockNumber:any)=>{
+      const currentDate = new Date(); // 当前日期和时间
+      const blockNumbers = [];
+
+      for (let daysAgo = 0; daysAgo <= 10; daysAgo++) {
+        const blockNumberForDay = calculateBlockNumberFor8AM(daysAgo, currentBlockNumber, currentDate);
+        blockNumbers.push(blockNumberForDay);
+      }
+
+      return blockNumbers;
+    }
 
 
 

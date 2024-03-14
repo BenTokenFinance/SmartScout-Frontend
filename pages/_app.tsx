@@ -55,8 +55,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   const getLayout = Component.getLayout ?? ((page) => <Layout>{ page }</Layout>);
 
-  return (    
-    <ValidatorsProvider>
+  return (<ValidatorsProvider>
        <ChakraProvider theme={ theme } cookies={ pageProps.cookies }>
        <AppErrorBoundary
          { ...ERROR_SCREEN_STYLES }

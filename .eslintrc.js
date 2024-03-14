@@ -175,7 +175,7 @@ module.exports = {
     'no-multi-spaces': 'error',
     'no-multi-str': 'error',
     'no-nested-ternary': 'error',
-    'no-trailing-spaces': 'off',
+    'no-trailing-spaces': 'error',
     'no-spaced-func': 'error',
     'no-with': 'error',
     'object-curly-spacing': [ 'error', 'always' ],

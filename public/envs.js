@@ -16,7 +16,7 @@ window.__envs = {
     NEXT_PUBLIC_NETWORK_ID: "10000",
     NEXT_PUBLIC_API_PROTOCOL: "http",
     NEXT_PUBLIC_NETWORK_NAME: "SmartBCH",
-    NEXT_PUBLIC_NETWORK_RPC_URL: "https://smartbch.greyh.at/",
+    NEXT_PUBLIC_NETWORK_RPC_URL: "https://rpc.smartbch.org",
     NEXT_PUBLIC_IS_TESTNET: "false",
     NEXT_PUBLIC_NETWORK_SHORT_NAME: "smartBCH",
     }    

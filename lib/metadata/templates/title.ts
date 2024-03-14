@@ -1,6 +1,6 @@
 import type { Route } from 'nextjs-routes';
 
-const TEMPLATE_MAP: Record<Route['pathname'], string> = {
+const TEMPLATE_MAP: Record<Route['pathname'], string> | any = {
   '/': 'blockchain explorer',
   '/txs': 'transactions',
   '/txs/kettle/[hash]': 'kettle %hash% transactions',

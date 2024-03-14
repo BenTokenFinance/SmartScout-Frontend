@@ -10,7 +10,7 @@ const CustomChild = ({ children }: Props) => {
   // 这里你可以基于 validators 数据做进一步逻辑处理
   // 例如，将 validators 传递给需要它的子组件
 
-  useEffect(()=>{  console.log("-----------validators",validators)},[validators])
+  // useEffect(()=>{  console.log("-----------validators",validators)},[validators])
   return (
     <>
        {Object.keys(validators).length>0&&children}

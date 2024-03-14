@@ -1,6 +1,6 @@
 import type { Route } from 'nextjs-routes';
 
-export const PAGE_TYPE_DICT: Record<Route['pathname'], string> = {
+export const PAGE_TYPE_DICT: Record<Route['pathname'], string> | any = {
   '/': 'Homepage',
   '/txs': 'Transactions',
   '/txs/kettle/[hash]': 'Kettle transactions',

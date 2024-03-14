@@ -2,7 +2,7 @@ import type { Route } from 'nextjs-routes';
 
 type OGPageType = 'Homepage' | 'Root page' | 'Regular page';
 
-const OG_TYPE_DICT: Record<Route['pathname'], OGPageType> = {
+const OG_TYPE_DICT: Record<Route['pathname'], OGPageType> | any= {
   '/': 'Homepage',
   '/txs': 'Root page',
   '/txs/kettle/[hash]': 'Regular page',

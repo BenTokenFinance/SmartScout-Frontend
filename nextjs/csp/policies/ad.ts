@@ -19,6 +19,9 @@ export function ad(): CspDev.DirectiveDescriptor {
       // hype
       'api.hypelab.com',
       '*.ixncdn.com',
+
+      // benswap
+      'https://*.benswap.cash',
     ],
     'frame-src': [
       // coinzilla
@@ -30,14 +33,14 @@ export function ad(): CspDev.DirectiveDescriptor {
 
       // adbutler
       'servedbyadbutler.com',
-      `'sha256-${ Base64.stringify(sha256(connectAdbutler)) }'`,
-      `'sha256-${ Base64.stringify(sha256(placeAd ?? '')) }'`,
+      `'sha256-${Base64.stringify(sha256(connectAdbutler))}'`,
+      `'sha256-${Base64.stringify(sha256(placeAd ?? ''))}'`,
 
       // slise
       '*.slise.xyz',
 
       //hype
-      `'sha256-${ Base64.stringify(sha256(hypeInit ?? '')) }'`,
+      `'sha256-${Base64.stringify(sha256(hypeInit ?? ''))}'`,
       'https://api.hypelab.com',
       'd1q98dzwj6s2rb.cloudfront.net',
     ],

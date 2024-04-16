@@ -128,14 +128,14 @@ const Content = chakra(({ className, isLoading, asProp, text, truncation = 'dyna
       case 'constant':
         return (
           <HashStringShorten
-            hash={ text }
+            hash={ text}
             as={ asProp }
           />
         );
       case 'dynamic':
         return (
           <HashStringShortenDynamic
-            hash={ text }
+            hash={ text}
             as={ asProp }
             tailLength={ tailLength }
           />

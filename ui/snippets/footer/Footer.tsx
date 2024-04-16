@@ -47,32 +47,32 @@ const Footer = () => {
       icon: 'social/git' as const,
       iconSize: '18px',
       text: 'Contribute',
-      url: 'https://github.com/blockscout/blockscout',
+      url: 'https://github.com/BenTokenFinance/SmartScout-Frontend',
     },
     {
       icon: 'social/tweet' as const,
       iconSize: '18px',
       text: 'Twitter',
-      url: 'https://www.twitter.com/blockscoutcom',
+      url: 'https://twitter.com/BenTokenFinanc1',
     },
     {
-      icon: 'social/discord' as const,
+      icon: 'social/telegram_filled' as const,
       iconSize: '24px',
-      text: 'Discord',
-      url: 'https://discord.gg/blockscout',
+      text: 'Telegram',
+      url: 'https://t.me/bentokenchinese',
     },
     {
       icon: 'discussions' as const,
       iconSize: '20px',
       text: 'Discussions',
       url: 'https://github.com/orgs/blockscout/discussions',
-    },
-    {
-      icon: 'donate' as const,
-      iconSize: '20px',
-      text: 'Donate',
-      url: 'https://github.com/sponsors/blockscout',
-    },
+    }
+    // {
+    //   icon: 'donate' as const,
+    //   iconSize: '20px',
+    //   text: 'Donate',
+    //   url: 'https://github.com/sponsors/blockscout',
+    // },
   ];
 
   // const frontendLink = useCallback(()=>{
@@ -128,9 +128,9 @@ const Footer = () => {
   const renderProjectInfo = React.useCallback((gridArea?: GridProps['gridArea']) => {
     return (
       <Box gridArea={ gridArea }>
-        <Link fontSize="xs" href="https://www.blockscout.com">blockscout.com</Link>
+        <Link fontSize="xs" href="https://www.smartscout.cash">smartscout.cash.</Link>
         <Text mt={ 3 } fontSize="xs">
-          Blockscout is a tool for inspecting and analyzing EVM based blockchains. Blockchain explorer for Ethereum Networks.
+        Smartscout is a tool for inspecting and analyzing EVM based blockchains. Blockchain explorer for Smartscout Networks.
         </Text>
        
         {(apiVersionUrl || frontendLink) && 

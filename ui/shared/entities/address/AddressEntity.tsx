@@ -12,6 +12,7 @@ import * as EntityBase from 'ui/shared/entities/base/components';
 
 import { getIconProps } from '../base/utils';
 import AddressIdenticon from './AddressIdenticon';
+import shortenString from 'lib/shortenString';
 
 type LinkProps = EntityBase.LinkBaseProps & Pick<EntityProps, 'address'>;
 
@@ -111,7 +112,16 @@ const Content = chakra((props: ContentProps) => {
     return (
       <Tooltip label={ label } maxW="100vw">
         <Skeleton isLoaded={ !props.isLoading } overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap" as="span">
-          { text }
+          { text } 
+            <Skeleton
+              display={'inline'}
+              className={ props.className }
+              isLoaded={ !props.isLoading }
+              overflow="hidden"
+              whiteSpace="nowrap"
+            >
+              <chakra.span as={  'span'  }>({ shortenString(props.address.hash, 6) })</chakra.span>              
+            </Skeleton>
         </Skeleton>
       </Tooltip>
     );

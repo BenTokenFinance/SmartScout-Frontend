@@ -32,7 +32,7 @@ export const base = {
           id: 'averageTxnFee',
           title: 'Average transaction fee',
           description: 'The average amount in ETH spent per transaction',
-          units: 'ETH',
+          units: 'SBCH',
         },
         {
           id: 'newTxns',
@@ -44,7 +44,7 @@ export const base = {
           id: 'txnsFee',
           title: 'Transactions fees',
           description: 'Amount of tokens paid as fees',
-          units: 'ETH',
+          units: 'SBCH',
         },
         {
           id: 'txnsGrowth',
@@ -68,7 +68,7 @@ export const base = {
           id: 'averageBlockRewards',
           title: 'Average block rewards',
           description: 'Average amount of distributed reward in tokens per day',
-          units: 'ETH',
+          units: 'SBCH',
         },
         {
           id: 'averageBlockSize',

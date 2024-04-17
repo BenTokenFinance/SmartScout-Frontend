@@ -47,7 +47,8 @@ const GasTrackerPriceSnippet = ({ data, type, isLoading }: Props) => {
       <Flex columnGap={ 3 } alignItems="center" mt={ 3 }>
         <IconSvg name={ ICONS[type] } boxSize={{ base: '30px', xl: 10 }} isLoading={ isLoading } flexShrink={ 0 }/>
         <Skeleton isLoaded={ !isLoading }>
-          <GasPrice data={ data } fontSize={{ base: '36px', xl: '48px' }} lineHeight="48px" fontWeight={ 600 } letterSpacing="-1px" fontFamily="heading"/>
+          <Flex fontSize={{ base: '36px', xl: '48px' }} lineHeight="48px" fontWeight={ 600 } letterSpacing="-1px" fontFamily="heading"><span>0.1 Gwei</span></Flex>
+          {/* <GasPrice data={ data } fontSize={{ base: '36px', xl: '48px' }} lineHeight="48px" fontWeight={ 600 } letterSpacing="-1px" fontFamily="heading"/> */}
         </Skeleton>
       </Flex>
       <Skeleton isLoaded={ !isLoading } fontSize="sm" color="text_secondary" mt={ 3 } display="inline-block">

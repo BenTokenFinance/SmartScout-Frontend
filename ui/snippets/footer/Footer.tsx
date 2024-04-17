@@ -35,7 +35,7 @@ const Footer = () => {
       icon: 'edit' as const,
       iconSize: '16px',
       text: 'Submit an issue',
-      url: issueUrl,
+      url: "https://github.com/BenTokenFinance/SmartScout-Frontend/issues/new?assignees=&labels=bug%2Ctriage&projects=&template=bug_report.yml",
     },
     {
       icon: 'social/canny' as const,
@@ -65,7 +65,7 @@ const Footer = () => {
       icon: 'discussions' as const,
       iconSize: '20px',
       text: 'Discussions',
-      url: 'https://github.com/orgs/blockscout/discussions',
+      url: 'https://github.com/BenTokenFinance/SmartScout-Frontend/discussions',
     }
     // {
     //   icon: 'donate' as const,

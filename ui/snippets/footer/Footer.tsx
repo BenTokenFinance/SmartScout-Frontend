@@ -37,12 +37,12 @@ const Footer = () => {
       text: 'Submit an issue',
       url: "https://github.com/BenTokenFinance/SmartScout-Frontend/issues/new?assignees=&labels=bug%2Ctriage&projects=&template=bug_report.yml",
     },
-    {
-      icon: 'social/canny' as const,
-      iconSize: '20px',
-      text: 'Feature request',
-      url: 'https://blockscout.canny.io/feature-requests',
-    },
+    // {
+    //   icon: 'social/canny' as const,
+    //   iconSize: '20px',
+    //   text: 'Feature request',
+    //   url: 'https://blockscout.canny.io/feature-requests',
+    // },
     {
       icon: 'social/git' as const,
       iconSize: '18px',
@@ -59,7 +59,7 @@ const Footer = () => {
       icon: 'social/telegram_filled' as const,
       iconSize: '24px',
       text: 'Telegram',
-      url: 'https://t.me/bentokenchinese',
+      url: 'https://t.me/bentokenfinance',
     },
     {
       icon: 'discussions' as const,
@@ -128,9 +128,9 @@ const Footer = () => {
   const renderProjectInfo = React.useCallback((gridArea?: GridProps['gridArea']) => {
     return (
       <Box gridArea={ gridArea }>
-        <Link fontSize="xs" href="https://www.smartscout.cash">smartscout.cash.</Link>
+        <Link fontSize="xs" href="https://www.smartscout.cash">smartscout.cash</Link>
         <Text mt={ 3 } fontSize="xs">
-        Smartscout is a tool for inspecting and analyzing EVM based blockchains. Blockchain explorer for Smartscout Networks.
+        Smartscout is a tool for inspecting and analyzing EVM based blockchains. Blockchain explorer for smartBCH Networks.
         </Text>
        
         {(apiVersionUrl || frontendLink) && 
@@ -142,7 +142,8 @@ const Footer = () => {
         ) }
         { frontendLink && (
            <Text fontSize="xs">
-            Frontend:{ frontendLink }
+            {/* Frontend:{ frontendLink } */}
+            Frontend:<Link href={'https://github.com/BenTokenFinance/SmartScout-Frontend/tree/sbch'} target="_blank">v1.0</Link>
           </Text>
         ) }
 

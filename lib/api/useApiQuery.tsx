@@ -57,36 +57,55 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
     if(resource=='homepage_blocks' && response.length>0){
       data[0]=addAddressNameLast(response);
     }
+
+
     if(resource=='address_tokens'){
-      // console.log('address_tokens',response);
-      data[0]=tranToken(response);
+      data[0]=address_tokens(response);
     }
     if(resource=='quick_search'){
       data[0]=quick_search(response);
-      console.log('quick_search',response);
+    }
+    if(resource=='address_token_transfers'){
+      data[0]=address_tokens(response);
     }
     
     
     return data[0];
   }
 
+  // token tran
+  const address_tokens=(response:any)=>{
+      const data=[response];
+      if(Object.keys(tokens).length>0){
+        for(let p of data[0].items){
+          if(tokens[p.token.address]){
+            p.token.name= tokens[p.token.address].name;
+            p.token.symbol= tokens[p.token.address].symbol;
+            p.token.icon_url=`https://asset.benswap.cash/assets/${p.token.address}/logo.png`;
+          }
+        }
+      }
+      return data[0];
+  }
   const quick_search=(response:any)=>{
     const data:any=JSON.parse(JSON.stringify(response))
     for(let p of data){
       if(tokens[p.address]){
         p.name= tokens[p.address].name;
         p.symbol= tokens[p.address].symbol;
+        p.icon_url=`https://asset.benswap.cash/assets/${p.address}/logo.png`;
       }
     }
     return data;
   }
+
+
   //add ens name
   const addAddressName=(response:any)=>{
       const data=[response];
       data[0].miner.name=validators[data[0].miner.hash];
       return data[0]
   }
-
   //add ens name list 
   const addAddressNameList=(response:any)=>{
       const data=[response];
@@ -96,7 +115,6 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
      })
      return data[0]
   }
-
   //add ens name list 
   const addAddressNameLast=(response:any)=>{
       const data=[response];
@@ -109,19 +127,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
       return data[0]
   }
 
-  // token tran
-  const tranToken=(response:any)=>{
-      const data=[response];
-      if(Object.keys(tokens).length>0){
-        for(let p of data[0].items){
-          if(tokens[p.token.address]){
-            p.token.name= tokens[p.token.address].name;
-            p.token.symbol= tokens[p.token.address].symbol;
-          }
-        }
-      }
-      return data[0];
-  }
+
   //token tarn Code
   const specialConversion=async(resource:any,response:any)=>{
       const data=[response];
@@ -133,7 +139,6 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
             p.symbol= tokens[p.address].symbol;
             p.icon_url=`https://asset.benswap.cash/assets/${p.address}/logo.png`;
           }
-          // urls.push(`https://asset.benswap.cash/assets/${p.address}/info.json`)
         }
   
         // // 使用Promise.all来同时发送所有请求，并等待它们全部完成
@@ -145,8 +150,6 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
         //     return null; // 对于失败的请求，返回null或者其他特定的值
         //   })
         // ));
-  
-  
         // for(const [i, value] of results.entries()){
         //   if(value){
         //     data[0].items[i].name=(value as any).name;
@@ -165,6 +168,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
           console.log(res_data);
           data[0].name=(res_data as any).name;
           data[0].symbol=(res_data as any).symbol;
+          data[0].icon_url=`https://asset.benswap.cash/assets/${data[0].address}/logo.png`;
         } catch (error) {
           // 处理请求或解析过程中的错误
           console.error("Error fetching data: ", error);
@@ -261,8 +265,6 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
       return data[0];
   }
 
-
-  
   // 计算给定日期的8点对应的区块号
     const calculateBlockNumberFor8AM=(daysAgo:any, currentBlockNumber:any, currentDate:any)=>{
       const millisecondsPerBlock = 6000;

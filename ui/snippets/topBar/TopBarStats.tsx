@@ -69,7 +69,14 @@ const TopBarStats = () => {
           <chakra.span color="text_secondary">Gas </chakra.span>
           <GasInfoTooltip data={ data } dataUpdatedAt={ dataUpdatedAt } >
             <Link>
-              <GasPrice data={ data.gas_prices.average }/>
+              <GasPrice data={{
+                fiat_price:null,
+                price: 0.1,
+                time: null,
+                base_fee: null,
+                priority_fee:null
+              }
+            }/>
             </Link>
           </GasInfoTooltip>
         </Skeleton>

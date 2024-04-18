@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import type { ResourceError, ResourceName, ResourcePayload } from './resources';
 import type { Params as ApiFetchParams } from './useApiFetch';
 import useApiFetch from './useApiFetch';
-import { useEffect, useMemo, useState } from 'react';
 import { useValidators } from '../contexts/ValidatorsProvider';
 
 export interface Params<R extends ResourceName, E = unknown> extends ApiFetchParams<R> {
@@ -24,7 +23,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
   { queryOptions, pathParams, queryParams, fetchParams }: Params<R, E> = {},
 ) {
   const apiFetch = useApiFetch();
-  const validators:any = useValidators();
+  const {validators,tokens}= useValidators() as any;
   // 使用 validators 数据
 
   //add hard Code
@@ -49,8 +48,6 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
         }
      }
     }
-
-
     if(resource=='block' && response.miner){
       data[0]=addAddressName(response);
     }
@@ -60,10 +57,29 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
     if(resource=='homepage_blocks' && response.length>0){
       data[0]=addAddressNameLast(response);
     }
+    if(resource=='address_tokens'){
+      // console.log('address_tokens',response);
+      data[0]=tranToken(response);
+    }
+    if(resource=='quick_search'){
+      data[0]=quick_search(response);
+      console.log('quick_search',response);
+    }
+    
     
     return data[0];
   }
 
+  const quick_search=(response:any)=>{
+    const data:any=JSON.parse(JSON.stringify(response))
+    for(let p of data){
+      if(tokens[p.address]){
+        p.name= tokens[p.address].name;
+        p.symbol= tokens[p.address].symbol;
+      }
+    }
+    return data;
+  }
   //add ens name
   const addAddressName=(response:any)=>{
       const data=[response];
@@ -81,7 +97,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
      return data[0]
   }
 
-    //add ens name list 
+  //add ens name list 
   const addAddressNameLast=(response:any)=>{
       const data=[response];
       data[0]=data[0].map((t:any,i:any)=>{
@@ -93,34 +109,50 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
       return data[0]
   }
 
-
+  // token tran
+  const tranToken=(response:any)=>{
+      const data=[response];
+      if(Object.keys(tokens).length>0){
+        for(let p of data[0].items){
+          if(tokens[p.token.address]){
+            p.token.name= tokens[p.token.address].name;
+            p.token.symbol= tokens[p.token.address].symbol;
+          }
+        }
+      }
+      return data[0];
+  }
   //token tarn Code
   const specialConversion=async(resource:any,response:any)=>{
       const data=[response];
       //token name  transition
       if(resource=='tokens' && response.items){
-        let urls=[];
         for(let p of data[0].items){
-          urls.push(`https://asset.benswap.cash/assets/${p.address}/info.json`)
-        }
-  
-        // 使用Promise.all来同时发送所有请求，并等待它们全部完成
-        const results = await Promise.all(urls.map(url =>
-          fetch(url)
-          .then(res => res.json())
-          .catch(error => {
-            console.error("Error fetching from:", url, error);
-            return null; // 对于失败的请求，返回null或者其他特定的值
-          })
-        ));
-  
-  
-        for(const [i, value] of results.entries()){
-          if(value){
-            data[0].items[i].name=(value as any).name;
-            data[0].items[i].symbol=(value as any).symbol;
+          if(tokens[p.address]){
+            p.name= tokens[p.address].name;
+            p.symbol= tokens[p.address].symbol;
+            p.icon_url=`https://asset.benswap.cash/assets/${p.address}/logo.png`;
           }
+          // urls.push(`https://asset.benswap.cash/assets/${p.address}/info.json`)
         }
+  
+        // // 使用Promise.all来同时发送所有请求，并等待它们全部完成
+        // const results = await Promise.all(urls.map(url =>
+        //   fetch(url)
+        //   .then(res => res.json())
+        //   .catch(error => {
+        //     console.error("Error fetching from:", url, error);
+        //     return null; // 对于失败的请求，返回null或者其他特定的值
+        //   })
+        // ));
+  
+  
+        // for(const [i, value] of results.entries()){
+        //   if(value){
+        //     data[0].items[i].name=(value as any).name;
+        //     data[0].items[i].symbol=(value as any).symbol;
+        //   }
+        // }
       }
 
       if(resource=='token'){

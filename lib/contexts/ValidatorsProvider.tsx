@@ -3,14 +3,18 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 type Props = {
     children: React.ReactNode;
 }
-
+interface ValidatorsInter {
+  validators:{};
+  tokens:{};
+  // 添加其他验证器的类型定义
+}
 // 创建 Context
-const ValidatorsContext = createContext({});
+const ValidatorsContext = createContext<ValidatorsInter>({validators:{},tokens:{}});
 
 // 创建一个提供者组件
 export function ValidatorsProvider({ children }: Props) {
-    const [validators, setValidators] = useState({});
-
+  const [validators, setValidators] = useState<any>({});
+  const [tokens, setTokens] = useState([]);
 
   
   const getValidators=async ()=>{
@@ -27,18 +31,40 @@ export function ValidatorsProvider({ children }: Props) {
     return res;
   }
 
+  const getTokens=async ()=>{
+    let res:any= {};
+    try {
+      const response = await fetch('https://asset.benswap.cash/tokens.json');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const ret:any= await response.json();
+      for(let p of ret){
+          res[p.address]=p;
+      }
+      return res;
+    } catch (error) {}
+
+    return res;
+  }
+
+  
+
   useEffect(() => {
     const fetchValidators = async () => {
       // 这里是你的异步数据获取逻辑
       const validatorsData = await getValidators();
+      const tokens = await getTokens();
+      setTokens(tokens);
       setValidators(validatorsData);
     };
+
 
     fetchValidators();
   }, []);
 
   return (
-    <ValidatorsContext.Provider value={validators}>
+    <ValidatorsContext.Provider value={{validators:validators,tokens:tokens}}>
       {children}
     </ValidatorsContext.Provider>
   );
@@ -48,6 +74,7 @@ export function ValidatorsProvider({ children }: Props) {
 // };
 
 export function useValidators() {
-    return useContext(ValidatorsContext);
+     const {validators,tokens}= useContext(ValidatorsContext);
+     return {validators,tokens}
 }
 

@@ -237,6 +237,7 @@ const AddressPageContent = () => {
       <AddressDetails addressQuery={ addressQuery } scrollRef={ tabsScrollRef }/>
       { /* should stay before tabs to scroll up with pagination */ }
       <Box ref={ tabsScrollRef }></Box>
+      
       { (isLoading || addressTabsCountersQuery.isPlaceholderData) ?
         <TabsSkeleton tabs={ tabs }/> :
         content

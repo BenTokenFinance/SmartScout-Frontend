@@ -31,18 +31,18 @@ const AdBanner = ({ className, isLoading }: { className?: string; isLoading?: bo
         return <SliseBanner/>;
     }
   })();
-
-  return (
-    <Skeleton
-      className={ className }
-      isLoaded={ !isLoading }
-      borderRadius="none"
-      maxW={ feature.provider === 'adbutler' ? feature.adButler.config.desktop.width : '728px' }
-      w="100%"
-    >
-      { content }
-    </Skeleton>
-  );
+  return null;
+  // return (
+  //   <Skeleton
+  //     className={ className }
+  //     isLoaded={ !isLoading }
+  //     borderRadius="none"
+  //     maxW={ feature.provider === 'adbutler' ? feature.adButler.config.desktop.width : '728px' }
+  //     w="100%"
+  //   >
+  //     { content }
+  //   </Skeleton>
+  // );
 };
 
 export default chakra(AdBanner);

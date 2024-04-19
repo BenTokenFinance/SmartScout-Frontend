@@ -1,5 +1,5 @@
-import { chakra } from '@chakra-ui/react';
-import React from 'react';
+import { chakra, effect } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 
 import type { GasPriceInfo } from 'types/api/stats';
 import type { GasUnit } from 'types/client/gasTracker';
@@ -23,7 +23,16 @@ interface Props {
 }
 
 const GasPrice = ({ data, prefix, className, unitMode = 'primary' }: Props) => {
-  if (!data || !feature.isEnabled) {
+  const [newData,setNewData]=useState<any>(data);
+
+  useEffect(() => {
+    let res ={...data};
+    if(res.price!=undefined){
+      res.price=0.1;
+    }
+    setNewData(res)
+  },[data])
+  if (!newData || !feature.isEnabled) {
     return null;
   }
 
@@ -36,18 +45,18 @@ const GasPrice = ({ data, prefix, className, unitMode = 'primary' }: Props) => {
         return null;
       }
 
-      const primaryUnitsValue = data[UNITS_TO_API_FIELD_MAP[primaryUnits]];
+      const primaryUnitsValue = newData[UNITS_TO_API_FIELD_MAP[primaryUnits]];
       if (!primaryUnitsValue) {
         // in this case we display values in secondary untis in primary mode as fallback
         return null;
       }
 
-      const secondaryUnitsValue = data[UNITS_TO_API_FIELD_MAP[secondaryUnits]];
+      const secondaryUnitsValue = newData[UNITS_TO_API_FIELD_MAP[secondaryUnits]];
       if (!secondaryUnitsValue) {
         return null;
       }
 
-      const formattedValue = formatGasValue(data, secondaryUnits);
+      const formattedValue = formatGasValue(newData, secondaryUnits);
       return <span className={ className }>{ prefix }{ formattedValue }</span>;
     }
     case 'primary': {
@@ -59,22 +68,22 @@ const GasPrice = ({ data, prefix, className, unitMode = 'primary' }: Props) => {
         return null;
       }
 
-      const value = data[UNITS_TO_API_FIELD_MAP[primaryUnits]];
+      const value = newData[UNITS_TO_API_FIELD_MAP[primaryUnits]];
       if (!value) {
         // in primary mode we want to fallback to secondary units if value in primary units are not available
         // unless there are no secondary units
-        const valueInSecondaryUnits = data[UNITS_TO_API_FIELD_MAP[secondaryUnits]];
+        const valueInSecondaryUnits = newData[UNITS_TO_API_FIELD_MAP[secondaryUnits]];
 
         if (!secondaryUnits || !valueInSecondaryUnits) {
           // in primary mode we always want to show something
           // this will return "N/A <units>"
-          return <span className={ className }>{ formatGasValue(data, primaryUnits) }</span>;
+          return <span className={ className }>{ formatGasValue(newData, primaryUnits) }</span>;
         } else {
-          return <span className={ className }>{ prefix }{ formatGasValue(data, secondaryUnits) }</span>;
+          return <span className={ className }>{ prefix }{ formatGasValue(newData, secondaryUnits) }</span>;
         }
       }
 
-      return <span className={ className }>{ prefix }{ formatGasValue(data, primaryUnits) }</span>;
+      return <span className={ className }>{ prefix }{ formatGasValue(newData, primaryUnits) }</span>;
     }
   }
 };

@@ -27,7 +27,7 @@ const dailyTxsIndicator: TChainIndicator<'stats_charts_txs'> = {
 
 const nativeTokenData = {
   name: config.chain.currency.name || '',
-  icon_url: '',
+  icon_url: 'https://asset.benswap.cash/assets/0x0000000000000000000000000000000000002711/logo.png',
   symbol: '',
   address: '',
   type: 'ERC-20' as const,

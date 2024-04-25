@@ -34,12 +34,12 @@ export function ValidatorsProvider({ children }: Props) {
   const getTokens=async ()=>{
     let res:any= {};
     try {
-      const response = await fetch('https://asset.benswap.cash/tokens.json');
+      const response = await fetch('https://asset.benswap.cash/assets/all.json');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const ret:any= await response.json();
-      for(let p of ret){
+      for(let p of [...ret.ERC20,...ret.ERC721]){
           res[p.address]=p;
       }
       return res;

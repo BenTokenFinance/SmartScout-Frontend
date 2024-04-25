@@ -11,29 +11,34 @@ import * as Layout from './components';
 import { useValidators } from '../../../lib/contexts/ValidatorsProvider';
 
 const LayoutDefault = ({ children }: Props) => {
-  const validators = useValidators();
-  useEffect(()=>{
-    console.log('-----validators------',validators)
-  },[validators])
-  return (
-    <Layout.Container>
-      <Layout.TopRow/>
-      <HeaderMobile/>
-      <Layout.MainArea>
-        <Layout.SideBar/>
-        <Layout.MainColumn>
-          <HeaderAlert/>
-          <HeaderDesktop/>
-          <AppErrorBoundary>
-            <Layout.Content>
-              { children }
-            </Layout.Content>
-          </AppErrorBoundary>
-        </Layout.MainColumn>
-      </Layout.MainArea>
-      <Layout.Footer/>
-    </Layout.Container>
-  );
+  const {validators,tokens}= useValidators() as any;
+  // useEffect(()=>{
+  //   console.log('-----validators------',tokens)
+  // },[tokens])
+  if(Object.keys(tokens).length>0){
+    return (
+      <Layout.Container>
+       <Layout.TopRow/>
+       <HeaderMobile/>
+       <Layout.MainArea>
+         <Layout.SideBar/>
+         <Layout.MainColumn>
+           <HeaderAlert/>
+           <HeaderDesktop/>
+           <AppErrorBoundary>
+             <Layout.Content>
+               { children }
+             </Layout.Content>
+           </AppErrorBoundary>
+         </Layout.MainColumn>
+       </Layout.MainArea>
+       <Layout.Footer/>
+     </Layout.Container>
+   );
+  }else{
+    return null;
+  }
+  
 };
 
 export default LayoutDefault;

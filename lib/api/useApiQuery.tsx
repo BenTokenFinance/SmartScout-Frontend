@@ -71,10 +71,29 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
     
     if(resource=='tx'){
       console.log("tx",response)
-      tran_tx(response);
+      data[0]=tran_tx(response);
     }
+    if(resource=='address_collections'){
+      console.log("address_collections",response)
+      data[0]=address_collections(response);
+    }
+
     
     return data[0];
+  }
+  const address_collections=(response:any)=>{
+    const data:any=JSON.parse(JSON.stringify(response))
+    if(Object.keys(tokens).length>0){
+      for(let p of data.items){
+        const token=p.token;
+        if(tokens[token.address]){
+          token.name= tokens[token.address].name;
+          token.symbol= tokens[token.address].symbol;
+          token.icon_url=`https://asset.benswap.cash/assets/${token.address}/logo.png`;
+        }
+      }
+    }
+    return data;
   }
 
   const tran_tx=(response:any)=>{

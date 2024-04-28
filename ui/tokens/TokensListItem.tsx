@@ -80,7 +80,7 @@ const TokensTableItem = ({
         <HStack spacing={ 3 }>
           <Skeleton isLoaded={ !isLoading } fontSize="sm" fontWeight={ 500 }>Price</Skeleton>
           <Skeleton isLoaded={ !isLoading } fontSize="sm" color="text_secondary">
-            <span>${ Number(exchangeRate).toLocaleString(undefined, { minimumSignificantDigits: 4 }) }</span>
+            <span>${ Number(BigNumber(exchangeRate).toFormat(4)).toLocaleString(undefined, { minimumSignificantDigits: 4 }) }</span>
           </Skeleton>
         </HStack>
       ) }

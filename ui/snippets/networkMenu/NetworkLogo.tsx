@@ -1,5 +1,5 @@
 import type { StyleProps } from '@chakra-ui/react';
-import { Box, Image, useColorModeValue, Skeleton } from '@chakra-ui/react';
+import { Box, Image, useColorModeValue, Skeleton, chakra } from '@chakra-ui/react';
 import React from 'react';
 
 import { route } from 'nextjs-routes';
@@ -12,6 +12,29 @@ interface Props {
   onClick?: (event: React.SyntheticEvent) => void;
   imageProps?: StyleProps;
 }
+
+import type { HTMLChakraProps } from '@chakra-ui/react';
+import { type IconName } from 'public/icons/name';
+
+export const href = '/icons/sprite.svg';
+
+export { IconName };
+
+interface Props extends HTMLChakraProps<'div'> {
+  name: IconName;
+  isLoading?: boolean;
+}
+
+const IconSvgs = ({ name, isLoading, ...props }: Props, ref: React.ForwardedRef<HTMLDivElement>) => {
+  return (
+    <Skeleton isLoaded={ !isLoading } display="inline-block" { ...props } ref={ ref }>
+      <chakra.svg w="100%" h="100%">
+        <use href={ `/static/og_placeholder.png` }/>
+      </chakra.svg>
+    </Skeleton>
+  );
+};
+
 
 const LogoFallback = ({ isCollapsed, isSmall, imageProps }: { isCollapsed?: boolean; isSmall?: boolean; imageProps?: StyleProps }) => {
   const field = isSmall ? 'icon' : 'logo';
@@ -32,16 +55,25 @@ const LogoFallback = ({ isCollapsed, isSmall, imageProps }: { isCollapsed?: bool
   }
 
   return (
-    <IconSvg
-      name={ isSmall ? 'networks/icon-placeholder' : 'networks/logo-placeholder' }
-      width="auto"
-      height="100%"
-      color={ logoColor }
-      display={ display }
-      { ...imageProps }
-    />
+    isCollapsed ? <Image  mr={2} src={`/static/${logoColor}_small.png`} alt={'icon'} />
+     :
+    <Image  mr={2} src={`/static/${logoColor}.png`} alt={'icon'} />
   );
+
+    // <IconSvgs
+    //   name={ isSmall ? 'networks/icon-placeholder' : 'networks/logo-placeholder' }
+    //   width="auto"
+    //   height="100%"
+    //   color={ logoColor }
+    //   display={ display }
+    //   { ...imageProps }
+    // />
+  
 };
+
+
+
+
 
 const NetworkLogo = ({ isCollapsed, onClick, imageProps }: Props) => {
 

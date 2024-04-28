@@ -75,18 +75,27 @@ const ChartsWidgetsList = ({ filterQuery, isError, isPlaceholderData, charts, in
                 templateColumns={{ lg: 'repeat(2, minmax(0, 1fr))' }}
                 gap={ 4 }
               >
-                { section.charts.map((chart) => (
-                  <ChartWidgetContainer
-                    key={ chart.id }
-                    id={ chart.id }
-                    title={ chart.title }
-                    description={ chart.description }
-                    interval={ interval }
-                    units={ chart.units || undefined }
-                    isPlaceholderData={ isPlaceholderData }
-                    onLoadingError={ handleChartLoadingError }
-                  />
-                )) }
+                { section.charts.map((chart) =>{
+                   if(chart.title=="Transactions success rate"||
+                      chart.title=="Average block rewards"||
+                      chart.title=="Average gas limit"
+                     ){
+                     return null
+                   }
+                   return (
+                  
+                    <ChartWidgetContainer
+                      key={ chart.id }
+                      id={ chart.id }
+                      title={ chart.title }
+                      description={ chart.description }
+                      interval={ interval }
+                      units={ chart.units || undefined }
+                      isPlaceholderData={ isPlaceholderData }
+                      onLoadingError={ handleChartLoadingError }
+                    />
+                  )
+                } ) }
               </Grid>
             </ListItem>
           ))

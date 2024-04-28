@@ -1,6 +1,6 @@
 import { Flex } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import config from 'configs/app';
 import useApiQuery from 'lib/api/useApiQuery';
@@ -12,6 +12,8 @@ import DataFetchAlert from 'ui/shared/DataFetchAlert';
 import { getTokensTotalInfo } from '../utils/tokenUtils';
 import useFetchTokens from '../utils/useFetchTokens';
 import TokenBalancesItem from './TokenBalancesItem';
+import BigNumber from 'bignumber.js';
+import { useValidators } from '../../../lib/contexts/ValidatorsProvider';
 
 const TokenBalances = () => {
   const router = useRouter();
@@ -45,11 +47,85 @@ const TokenBalances = () => {
     ` | ${ prefix }${ tokensInfo.num } ${ tokensInfo.num > 1 ? 'tokens' : 'token' }` :
     '';
 
+  const [tokenPrices,setTokenPrices]=useState<any>({});
+  const [sbchPrice,setSbchPrice]=useState(0);
+  const [priceData,setPriceData]=useState<any>();
+  
+  const {priceInfo}= useValidators() as any;
+  // useEffect(()=>{
+  //   const  feth=async()=>{
+  //     try {
+  //       const [tokenResponse, sbchResponse, priceResponse] = await Promise.all([
+  //         fetch('https://asset.benswap.cash/smartscoutprice.json'),
+  //         fetch('https://api2.benswap.cash/sbchPrice'),
+  //         fetch('https://subgraphs.benswap.cash/subgraphs/name/bentokenfinance/bch-exchange', {
+  //           method: 'post',
+  //           headers: { 'Content-Type': 'application/json' },
+  //           body: JSON.stringify({
+  //             query: "{ tokens(where:{derivedUSD_gt:0}) {id symbol derivedBCH derivedUSD }}" 
+  //           })
+  //         })
+  //       ]);
+    
+  //       // Check if all responses are ok
+  //       if (!tokenResponse.ok || !sbchResponse.ok || !priceResponse.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+    
+  //       // Parse responses
+  //       const [tokenData, sbchData, priceData]:any = await Promise.all([
+  //         tokenResponse.json(),
+  //         sbchResponse.json(),
+  //         priceResponse.json()
+  //       ]);
+    
+  //       // Set state with all data
+  //       setTokenPrices(tokenData);
+  //       setSbchPrice(sbchData.price);
+  //       setPriceData(priceData);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //       // Handle error
+  //     }
+  //   }
+  //   if(Object.keys(tokenPrices).length===0){
+  //     feth();
+  //   }
+  // },[])
+  const totalPrice=useMemo(()=>{
+    let totalPrices=new BigNumber(0);
+    if(tokenQuery && tokenQuery.data["ERC-20"].items.length>0 && Object.keys(priceInfo).length>0){
+      const whitelists=Object.keys(priceInfo as any);
+      const commonElements = tokenQuery.data["ERC-20"].items.filter(element => whitelists.includes(element.token.address));
+      const sbch = tokenQuery.data["ERC-20"].items.find(element => element.token.address==='0x0000000000000000000000000000000000002711');
+
+      for(let p of commonElements){
+          // if(priceInfo[p.token.address]===1){
+            const p_Balance=(new BigNumber(p.value)).div(new BigNumber(10).pow(parseInt(p.token.decimals||'0')))
+            totalPrices=totalPrices.plus(p_Balance.times(new BigNumber(priceInfo[p.token.address].derivedUSD)));
+          // }
+          // if(priceInfo[p.token.address]===2){
+          //   const p_Balance=(new BigNumber(p.value)).div(new BigNumber(10).pow(parseInt(p.token.decimals||'0')))
+          //   totalPrices=totalPrices.plus(p_Balance.times(new BigNumber(priceInfo[p.token.address].derivedUSD)));
+          // }
+          // if(priceInfo[p.token.address]===3){
+          //   const p_Balance=(new BigNumber(p.value)).div(new BigNumber(10).pow(parseInt(p.token.decimals||'0')))
+          //   totalPrices=totalPrices.plus(p_Balance.times(new BigNumber(1)));
+          // }
+      }
+      // if(sbch){
+      //   const p_Balance=(new BigNumber(sbch.value)).div(new BigNumber(10).pow(parseInt(sbch.token.decimals||'0')));
+      //   totalPrices=totalPrices.plus(p_Balance.times(new BigNumber(priceInfo[sbch.token.address].derivedUSD)));
+      // }
+    }
+    return totalPrices;
+  },[tokenQuery.data,priceInfo])
   return (
     <Flex columnGap={ 3 } rowGap={ 3 } mt={{ base: '6px', lg: 0 }} flexDirection={{ base: 'column', lg: 'row' }}>
       <TokenBalancesItem
         name="Net Worth"
-        value={ addressData?.exchange_rate ? `${ prefix }$${ totalUsd.toFormat(2) } USD` : 'N/A' }
+        value={ totalPrice!=undefined ?  `$${totalPrice.toFormat(2)} USD`:"N/A"}
+        // value={ addressData?.exchange_rate ? `${ prefix }$${ totalUsd.toFormat(2) } USD` : 'N/A' }
         isLoading={ addressQuery.isPending || tokenQuery.isPending }
       />
       <TokenBalancesItem
@@ -60,9 +136,13 @@ const TokenBalances = () => {
       <TokenBalancesItem
         name="Tokens"
         value={
-          `${ prefix }$${ tokensInfo.usd.toFormat(2) } USD ` +
+          `${ prefix }$${totalPrice!=undefined ?  `${totalPrice.toFormat(2)} USD`:"N/A"}` +
           tokensNumText
         }
+        // value={
+        //   `${ prefix }$${ tokensInfo.usd.toFormat(2) } USD ` +
+        //   tokensNumText
+        // }
         isLoading={ addressQuery.isPending || tokenQuery.isPending }
       />
     </Flex>

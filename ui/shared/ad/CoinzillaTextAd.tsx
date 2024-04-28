@@ -65,7 +65,7 @@ const CoinzillaTextAd = ({ className }: {className?: string}) => {
   }
 
   const urlObject = new URL(adData.ad.url);
-
+  return null;
   return (
     <Box className={ className }>
       <Text

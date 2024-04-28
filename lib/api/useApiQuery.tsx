@@ -5,6 +5,7 @@ import type { ResourceError, ResourceName, ResourcePayload } from './resources';
 import type { Params as ApiFetchParams } from './useApiFetch';
 import useApiFetch from './useApiFetch';
 import { useValidators } from '../contexts/ValidatorsProvider';
+import BigNumber from 'bignumber.js';
 
 export interface Params<R extends ResourceName, E = unknown> extends ApiFetchParams<R> {
   queryOptions?: Omit<UseQueryOptions<ResourcePayload<R>, ResourceError<E>, ResourcePayload<R>>, 'queryKey' | 'queryFn'>;
@@ -23,7 +24,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
   { queryOptions, pathParams, queryParams, fetchParams }: Params<R, E> = {},
 ) {
   const apiFetch = useApiFetch();
-  const {validators,tokens}= useValidators() as any;
+  const {validators,tokens,priceInfo}= useValidators() as any;
   // 使用 validators 数据
 
   //add hard Code
@@ -41,12 +42,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
     }
     
     if(resource=='tokens' && response.items){
-      for(let p of data[0].items){
-        if(p.name==fixName){
-           p.name=handName
-           break;
-        }
-     }
+      data[0]=tranTokens(response);
     }
     if(resource=='block' && response.miner){
       data[0]=addAddressName(response);
@@ -81,6 +77,25 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
     
     return data[0];
   }
+
+  const tranTokens=(response:any)=>{
+    const handName="Wrapped SBCH"
+    const fixName="Wrapped BCH"
+    const data:any=JSON.parse(JSON.stringify(response))
+    for(let p of data.items){
+      if(priceInfo[p.address]){
+         p.exchange_rate=priceInfo[p.address].derivedUSD;
+         const total_supply=(new BigNumber(p.total_supply)).div(new BigNumber(10).pow(parseInt(p.decimals||'0')));
+         p.circulating_market_cap=total_supply.times(new BigNumber(priceInfo[p.address].derivedUSD)).toFixed();
+      }
+      if(p.name==fixName){
+         p.name=handName
+      }
+    }
+    return data;
+  }
+
+
   const address_collections=(response:any)=>{
     const data:any=JSON.parse(JSON.stringify(response))
     if(Object.keys(tokens).length>0){
@@ -115,6 +130,12 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
       const data=[response];
       if(Object.keys(tokens).length>0){
         for(let p of data[0].items){
+          if(priceInfo[p.token.address]){
+            p.token.exchange_rate=priceInfo[p.token.address].derivedUSD;
+            const total_supply=(new BigNumber(p.token.total_supply)).div(new BigNumber(10).pow(parseInt(p.token.decimals||'0')));
+            p.token.circulating_market_cap=total_supply.times(new BigNumber(priceInfo[p.token.address].derivedUSD)).toFixed();
+          }
+
           if(tokens[p.token.address]){
             p.token.name= tokens[p.token.address].name;
             p.token.symbol= tokens[p.token.address].symbol;

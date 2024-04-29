@@ -66,11 +66,9 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
     }
     
     if(resource=='tx'){
-      console.log("tx",response)
       data[0]=tran_tx(response);
     }
     if(resource=='address_collections'){
-      console.log("address_collections",response)
       data[0]=address_collections(response);
     }
 
@@ -223,7 +221,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
           // 等待并解析JSON响应
           const res_data = await ret.json();
           // 使用获取到的数据
-          console.log(res_data);
+          // console.log(res_data);
           data[0].name=(res_data as any).name;
           data[0].symbol=(res_data as any).symbol;
           data[0].icon_url=`https://asset.benswap.cash/assets/${data[0].address}/logo.png`;
@@ -241,7 +239,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
           // 等待并解析JSON响应
           const res_data:any = await ret.json();
           // 使用获取到的数据
-          console.log(res_data.price);
+          // console.log(res_data.price);
           data[0].coin_price=res_data.price;
           data[0].market_cap=`${parseFloat(res_data.price)*68313.420483}`;
         } catch (error) {
@@ -304,7 +302,6 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
           );
           const res_data:any = await ret.json();
           // 使用获取到的数据
-          console.log("使用获取到的数据",res_data.price);
           for (const i in res_data.data) {
             date_data[i].closing_price=res_data.data[i][0]['bchPrice'];
             date_data[i].market_cap=`${parseFloat(res_data.data[i][0]['bchPrice'])*68313.420483}`

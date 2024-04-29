@@ -100,7 +100,7 @@ export function ValidatorsProvider({ children }: Props) {
 
   useEffect(() => {
     const fetchValidators = async () => {
-      console.log("数据更新")
+      // console.log("数据更新")
       // 这里是你的异步数据获取逻辑
       const validatorsData = await getValidators();
       const tokens = await getTokens();

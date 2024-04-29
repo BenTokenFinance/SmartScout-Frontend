@@ -64,27 +64,27 @@ const CoinzillaTextAd = ({ className }: {className?: string}) => {
     return null;
   }
 
-  const urlObject = new URL(adData.ad.url);
+  const urlObject = new URL(adData?.ad?.url);
   return null;
-  return (
-    <Box className={ className }>
-      <Text
-        as="span"
-        whiteSpace="pre-wrap"
-        fontWeight={ 700 }
-        mr={ 3 }
-        display={{ base: 'none', lg: 'inline' }}
-      >
-        Ads:
-      </Text>
-      { urlObject.hostname === 'nifty.ink' ?
-        <Text as="span" mr={ 1 }>🎨</Text> :
-        <Image src={ adData.ad.thumbnail } width="20px" height="20px" mb="-4px" mr={ 1 } display="inline" alt=""/>
-      }
-      <Text as="span" whiteSpace="pre-wrap">{ `${ adData.ad.name } ${ ndash } ${ adData.ad.description_short } ` }</Text>
-      <Link href={ adData.ad.url }>{ adData.ad.cta_button }</Link>
-    </Box>
-  );
+  // return (
+  //   <Box className={ className }>
+  //     <Text
+  //       as="span"
+  //       whiteSpace="pre-wrap"
+  //       fontWeight={ 700 }
+  //       mr={ 3 }
+  //       display={{ base: 'none', lg: 'inline' }}
+  //     >
+  //       Ads:
+  //     </Text>
+  //     { urlObject.hostname === 'nifty.ink' ?
+  //       <Text as="span" mr={ 1 }>🎨</Text> :
+  //       <Image src={ adData.ad.thumbnail } width="20px" height="20px" mb="-4px" mr={ 1 } display="inline" alt=""/>
+  //     }
+  //     <Text as="span" whiteSpace="pre-wrap">{ `${ adData.ad.name } ${ ndash } ${ adData.ad.description_short } ` }</Text>
+  //     <Link href={ adData.ad.url }>{ adData.ad.cta_button }</Link>
+  //   </Box>
+  // );
 };
 
 export default chakra(CoinzillaTextAd);

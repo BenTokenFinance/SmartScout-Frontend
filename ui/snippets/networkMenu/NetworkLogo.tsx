@@ -13,28 +13,6 @@ interface Props {
   imageProps?: StyleProps;
 }
 
-import type { HTMLChakraProps } from '@chakra-ui/react';
-import { type IconName } from 'public/icons/name';
-
-export const href = '/icons/sprite.svg';
-
-export { IconName };
-
-interface Props extends HTMLChakraProps<'div'> {
-  name: IconName;
-  isLoading?: boolean;
-}
-
-const IconSvgs = ({ name, isLoading, ...props }: Props, ref: React.ForwardedRef<HTMLDivElement>) => {
-  return (
-    <Skeleton isLoaded={ !isLoading } display="inline-block" { ...props } ref={ ref }>
-      <chakra.svg w="100%" h="100%">
-        <use href={ `/static/og_placeholder.png` }/>
-      </chakra.svg>
-    </Skeleton>
-  );
-};
-
 
 const LogoFallback = ({ isCollapsed, isSmall, imageProps }: { isCollapsed?: boolean; isSmall?: boolean; imageProps?: StyleProps }) => {
   const field = isSmall ? 'icon' : 'logo';

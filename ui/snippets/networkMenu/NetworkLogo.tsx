@@ -33,12 +33,12 @@ const LogoFallback = ({ isCollapsed, isSmall, imageProps }: { isCollapsed?: bool
   }
 
   return (
-    isCollapsed ? <Image  mr={2} src={`/static/${logoColor}_small.png`} alt={'icon'} />
-     :
-    <Image  mr={2} src={`/static/${logoColor}.png`} alt={'icon'} />
+  isCollapsed ? <Image  mr={2} src={`/static/${logoColor}_small.png`} alt={'icon'} />
+  :
+  <Image  mr={2} src={`/static/${logoColor}.png`} alt={'icon'} />
   );
 
-    // <IconSvgs
+    // <IconSvg
     //   name={ isSmall ? 'networks/icon-placeholder' : 'networks/logo-placeholder' }
     //   width="auto"
     //   height="100%"
@@ -85,7 +85,7 @@ const NetworkLogo = ({ isCollapsed, onClick, imageProps }: Props) => {
         { ...imageProps }
       />
       { /* small logo */ }
-      <Image
+      {/* <Image
         w="auto"
         h="100%"
         src={ iconSrc }
@@ -94,7 +94,7 @@ const NetworkLogo = ({ isCollapsed, onClick, imageProps }: Props) => {
         display={{ base: 'none', lg: isCollapsed === false ? 'none' : 'block', xl: isCollapsed ? 'block' : 'none' }}
         style={ iconStyle }
         { ...imageProps }
-      />
+      /> */}
     </Box>
   );
 };

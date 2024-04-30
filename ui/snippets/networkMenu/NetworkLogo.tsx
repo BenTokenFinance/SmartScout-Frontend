@@ -33,9 +33,9 @@ const LogoFallback = ({ isCollapsed, isSmall, imageProps }: { isCollapsed?: bool
   }
 
   return (
-  isCollapsed ? <Image  mr={2} src={`/static/${logoColor}_small.png`} alt={'icon'} />
+  isCollapsed ? <Image  mr={2} src={`/static/${logoColor}_small.svg`} alt={'icon'} />
   :
-  <Image  mr={2} src={`/static/${logoColor}.png`} alt={'icon'} />
+  <Image  mr={2} src={`/static/${logoColor}.svg`} alt={'icon'} />
   );
 
     // <IconSvg

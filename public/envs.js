@@ -19,4 +19,5 @@ window.__envs = {
     NEXT_PUBLIC_NETWORK_RPC_URL: "https://rpc.smartbch.org",
     NEXT_PUBLIC_IS_TESTNET: "false",
     NEXT_PUBLIC_NETWORK_SHORT_NAME: "smartBCH",
+    NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID:"c70be94ef7b8107b25006df9b3c0d7d5"
     }    

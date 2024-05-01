@@ -32,10 +32,17 @@ const LogoFallback = ({ isCollapsed, isSmall, imageProps }: { isCollapsed?: bool
     return <Skeleton w="100%" borderRadius="sm" display={ display }/>;
   }
 
+  if(isCollapsed==undefined){
+    return<>
+        <Image  display={{base:'none',xl:'none',lg:'block'}} src={`/static/${logoColor}_small.svg`} alt={'icon'} />
+        <Image  display={{xl:'block',lg:'none'}} src={`/static/${logoColor}.svg`} alt={'icon'} />
+    </>
+  }
   return (
-  isCollapsed ? <Image  mr={2} src={`/static/${logoColor}_small.svg`} alt={'icon'} />
-  :
-  <Image  mr={2} src={`/static/${logoColor}.svg`} alt={'icon'} />
+    isCollapsed ? 
+    <Image src={`/static/${logoColor}_small.svg`} alt={'icon'} />
+    :
+    <Image src={`/static/${logoColor}.svg`} alt={'icon'} />
   );
 
     // <IconSvg

@@ -92,39 +92,34 @@ const TokenBalances = () => {
   //     feth();
   //   }
   // },[])
-  const totalPrice=useMemo(()=>{
+  const totalUsdPrice=useMemo(()=>{
+    const SEP206='0x0000000000000000000000000000000000002711';
     let totalPrices=new BigNumber(0);
+    let netWorth=new BigNumber(0);
     if(tokenQuery && tokenQuery.data["ERC-20"].items.length>0 && Object.keys(priceInfo).length>0){
       const whitelists=Object.keys(priceInfo as any);
       const commonElements = tokenQuery.data["ERC-20"].items.filter(element => whitelists.includes(element.token.address));
-      const sbch = tokenQuery.data["ERC-20"].items.find(element => element.token.address==='0x0000000000000000000000000000000000002711');
+      const sbch = tokenQuery.data["ERC-20"].items.find(element => element.token.address===SEP206);
 
       for(let p of commonElements){
-          // if(priceInfo[p.token.address]===1){
             const p_Balance=(new BigNumber(p.value)).div(new BigNumber(10).pow(parseInt(p.token.decimals||'0')))
             totalPrices=totalPrices.plus(p_Balance.times(new BigNumber(priceInfo[p.token.address].derivedUSD)));
-          // }
-          // if(priceInfo[p.token.address]===2){
-          //   const p_Balance=(new BigNumber(p.value)).div(new BigNumber(10).pow(parseInt(p.token.decimals||'0')))
-          //   totalPrices=totalPrices.plus(p_Balance.times(new BigNumber(priceInfo[p.token.address].derivedUSD)));
-          // }
-          // if(priceInfo[p.token.address]===3){
-          //   const p_Balance=(new BigNumber(p.value)).div(new BigNumber(10).pow(parseInt(p.token.decimals||'0')))
-          //   totalPrices=totalPrices.plus(p_Balance.times(new BigNumber(1)));
-          // }
+            if(p.token.address!=SEP206){
+               netWorth=totalPrices.plus(p_Balance.times(new BigNumber(priceInfo[p.token.address].derivedUSD)));
+            }
       }
-      // if(sbch){
-      //   const p_Balance=(new BigNumber(sbch.value)).div(new BigNumber(10).pow(parseInt(sbch.token.decimals||'0')));
-      //   totalPrices=totalPrices.plus(p_Balance.times(new BigNumber(priceInfo[sbch.token.address].derivedUSD)));
-      // }
+      if(addressData){
+        const p_Balance=new BigNumber(addressData?.coin_balance||0).div(new BigNumber(10).pow(config.chain.currency.decimals))
+        netWorth=netWorth.plus(p_Balance.times(new BigNumber(priceInfo[SEP206].derivedUSD)));
+      }
     }
-    return totalPrices;
-  },[tokenQuery.data,priceInfo])
+    return {netWorth,totalPrices};
+  },[tokenQuery.data,priceInfo,addressData])
   return (
     <Flex columnGap={ 3 } rowGap={ 3 } mt={{ base: '6px', lg: 0 }} flexDirection={{ base: 'column', lg: 'row' }}>
       <TokenBalancesItem
         name="Net Worth"
-        value={ totalPrice!=undefined ?  `$${totalPrice.toFormat(2)} USD`:"N/A"}
+        value={ totalUsdPrice.netWorth!=undefined ?  `$${totalUsdPrice.netWorth.toFormat(2)} USD`:"N/A"}
         // value={ addressData?.exchange_rate ? `${ prefix }$${ totalUsd.toFormat(2) } USD` : 'N/A' }
         isLoading={ addressQuery.isPending || tokenQuery.isPending }
       />
@@ -136,7 +131,7 @@ const TokenBalances = () => {
       <TokenBalancesItem
         name="Tokens"
         value={
-          `${ prefix }$${totalPrice!=undefined ?  `${totalPrice.toFormat(2)} USD`:"N/A"}` +
+          `${ prefix }$${totalUsdPrice.totalPrices!=undefined ?  `${totalUsdPrice.totalPrices.toFormat(2)} USD`:"N/A"}` +
           tokensNumText
         }
         // value={

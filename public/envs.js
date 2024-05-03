@@ -19,5 +19,6 @@ window.__envs = {
     NEXT_PUBLIC_NETWORK_RPC_URL: "https://rpc.smartbch.org",
     NEXT_PUBLIC_IS_TESTNET: "false",
     NEXT_PUBLIC_NETWORK_SHORT_NAME: "smartBCH",
-    NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID:"c70be94ef7b8107b25006df9b3c0d7d5"
-    }    
+    NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID:"c70be94ef7b8107b25006df9b3c0d7d5",
+    NEXT_PUBLIC_CONTRACT_CODE_IDES: "[{'title':'Remix IDE','url':'https://remix.ethereum.org/?address={hash}&blockscout=smartscout.cash','icon_url':'https://raw.githubusercontent.com/blockscout/frontend-configs/main/configs/ide-icons/remix.png'}]"
+    }

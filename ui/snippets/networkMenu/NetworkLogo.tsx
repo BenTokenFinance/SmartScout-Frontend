@@ -87,7 +87,9 @@ const NetworkLogo = ({ isCollapsed, onClick, imageProps }: Props) => {
         src={ logoSrc }
         alt={ `${ config.chain.name } network logo` }
         fallback={ <LogoFallback isCollapsed={ isCollapsed } imageProps={ imageProps }/> }
-        display={{ base: 'block', lg: isCollapsed === false ? 'block' : 'none', xl: isCollapsed ? 'none' : 'block' }}
+        display={{ base: 'block'}}
+
+        // display={{ base: 'block', lg: isCollapsed === false ? 'block' : 'none', xl: isCollapsed ? 'none' : 'block' }}
         style={ logoStyle }
         { ...imageProps }
       />

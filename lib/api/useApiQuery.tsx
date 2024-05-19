@@ -111,7 +111,7 @@ export default function useApiQuery<R extends ResourceName, E = unknown>(
 
   const tran_tx=(response:any)=>{
     const data:any=JSON.parse(JSON.stringify(response))
-    if(Object.keys(tokens).length>0){
+    if(Object.keys(tokens).length>0 && data.token_transfers){
       for(let p of data.token_transfers){
         const token=p.token;
         if(tokens[p.token.address]){

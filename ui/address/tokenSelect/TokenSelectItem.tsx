@@ -1,4 +1,4 @@
-import { chakra, Flex, Text, useColorModeValue } from '@chakra-ui/react';
+import { chakra, Flex, Text, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 
@@ -49,7 +49,7 @@ const TokenSelectItem = ({ data }: Props) => {
   })();
 
   const url = route({ pathname: '/token/[hash]', query: { hash: data.token.address } });
-
+  const { colorMode } = useColorMode();
   return (
     <LinkInternal
       px={ 1 }
@@ -62,7 +62,8 @@ const TokenSelectItem = ({ data }: Props) => {
       _hover={{
         bgColor: useColorModeValue('blue.50', 'gray.800'),
       }}
-      color="initial"
+      // color='initial'
+      color={colorMode!=='light'?'rgba(255, 255, 255, 0.92)':'initial'}
       fontSize="sm"
       href={ url }
     >

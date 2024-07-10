@@ -93,7 +93,7 @@ const TxsListItem = ({ tx, isLoading, showBlockInfo, currentAddress, enableTimeI
       { !config.UI.views.tx.hiddenFields?.value && (
         <Flex mt={ 2 } columnGap={ 2 }>
           <Skeleton isLoaded={ !isLoading } display="inline-block" whiteSpace="pre">Value</Skeleton>
-          <Skeleton isLoaded={ !isLoading } display="inline-block" variant="text_secondary" whiteSpace="pre">
+          <Skeleton isLoaded={ !isLoading } display="inline-block" variant="text_secondary" wordBreak='break-all'>
             { getValueWithUnit(tx.value).toFormat() }
             { space }
             { currencyUnits.ether }
@@ -108,7 +108,7 @@ const TxsListItem = ({ tx, isLoading, showBlockInfo, currentAddress, enableTimeI
               { tx.stability_fee ? (
                 <TxFeeStability data={ tx.stability_fee } isLoading={ isLoading } hideUsd/>
               ) : (
-                <Skeleton isLoaded={ !isLoading } display="inline-block" variant="text_secondary" whiteSpace="pre">
+                <Skeleton isLoaded={ !isLoading } display="inline-block" variant="text_secondary" wordBreak='break-all'>
                   { getValueWithUnit(tx.fee.value || 0).toFormat() }
                   { config.UI.views.tx.hiddenFields?.fee_currency ? '' : ` ${ currencyUnits.ether }` }
                 </Skeleton>
